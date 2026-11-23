@@ -25,11 +25,12 @@ function geoResultToCity(r: GeoResult): City {
  */
 export async function searchCities(
   query: string,
-  lang: "es" | "en" = "es"
+  lang: "es" | "en" = "es",
+  signal?: AbortSignal
 ): Promise<City[]> {
   if (!query.trim()) return [];
   const url = `/api/geocode?q=${encodeURIComponent(query)}&lang=${lang}`;
-  const res = await fetch(url);
+  const res = await fetch(url, { signal });
   if (!res.ok) {
     throw new Error(`geocode_failed_${res.status}`);
   }

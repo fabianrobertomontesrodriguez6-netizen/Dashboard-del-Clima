@@ -1,0 +1,17 @@
+# Dependencias
+node_modules
+
+# Salida de build / caché de Next.js
+.next
+out
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# Variables de entorno locales
+.env
+.env*.local
+
+# Local Netlify folder
+.netlify

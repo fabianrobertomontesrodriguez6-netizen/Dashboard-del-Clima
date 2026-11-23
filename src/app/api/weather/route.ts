@@ -93,6 +93,7 @@ export async function GET(request: Request) {
     const res = await fetch(url, {
       headers: { Accept: "application/json" },
       next: { revalidate: 600 },
+      signal: AbortSignal.timeout(8000),
     });
 
     if (res.ok) {
@@ -129,6 +130,7 @@ async function fetchFromWttr(lat: number, lon: number) {
     const res = await fetch(url, {
       headers: { Accept: "application/json" },
       next: { revalidate: 600 },
+      signal: AbortSignal.timeout(8000),
     });
 
     if (!res.ok) {

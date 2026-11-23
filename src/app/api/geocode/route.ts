@@ -11,7 +11,7 @@ const ENDPOINT = "https://geocoding-api.open-meteo.com/v1/search";
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q")?.trim();
-  const lang = (searchParams.get("lang") ?? "es") as "es" | "en";
+  const lang = searchParams.get("lang") === "en" ? "en" : "es";
 
   if (!q || q.length < 2) {
     return NextResponse.json({ results: [] });
@@ -29,8 +29,11 @@ export async function GET(request: Request) {
         res = await fetch(url, {
           headers: { Accept: "application/json" },
           next: { revalidate: 3600 },
+          // Evita que la función quede colgada si Open-Meteo no responde
+          signal: AbortSignal.timeout(6000),
         });
-        if (res.ok) break;
+        // Solo se reintenta ante errores 5xx; un 4xx no mejora reintentando
+        if (res.ok || res.status < 500) break;
       } catch (e) {
         lastErr = e;
       }
