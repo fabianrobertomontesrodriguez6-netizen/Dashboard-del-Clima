@@ -26,7 +26,14 @@ export function HourlyForecast({ data }: HourlyForecastProps) {
   const startIndex = findStartIndex(hourly.time, now, data.timezone);
   const endIndex = Math.min(startIndex + 24, hourly.time.length);
 
-  const items = [];
+  const items: {
+    time: string;
+    temp: number;
+    weatherCode: number;
+    isDay: boolean;
+    precipProb: number;
+    wind: number;
+  }[] = [];
   for (let i = startIndex; i < endIndex; i++) {
     items.push({
       time: hourly.time[i],

@@ -46,6 +46,7 @@ interface WttrResponse {
       weatherCode: string;
       weatherDesc: Array<{ value: string }>;
       chanceofrain: string;
+      precipMM?: string;
       windspeedKmph: string;
       cloudcover: string;
       pressure: string;
@@ -170,7 +171,13 @@ export function wttrToOpenMeteo(
     const astro = day.astronomy?.[0];
     dailySunrise.push(parseTimeOfDay(day.date, astro?.sunrise ?? "06:00"));
     dailySunset.push(parseTimeOfDay(day.date, astro?.sunset ?? "18:00"));
-    dailyPrecipSum.push(parseFloat(day.hourly?.[0]?.precipMM ?? "0"));
+    // Suma de los intervalos de 3 h del día
+    dailyPrecipSum.push(
+      (day.hourly ?? []).reduce(
+        (sum, h) => sum + (parseFloat(h.precipMM ?? "0") || 0),
+        0
+      )
+    );
     dailyPrecipProbMax.push(
       Math.max(...day.hourly.map((h) => parseInt(h.chanceofrain, 10) || 0))
     );
